@@ -5,15 +5,17 @@ Slow username sniper that seems to work to a small extent.
 ```json
 {
   "account": {
-    "bearerToken": "minecraft.net bearer token",
-    "email": "your minecraft user email",
-    "password": "your minecraft user password",
+    "bearerToken": "eyJhbGciOiJIUzI1NiJ9...",
+    "email": "minecraft-email@example.com",
+    "password": "youshallnotpass",
     "migrated": true
   },
-  "target": {
-    "username": "the username you want",
-    "uuid": "uuid of last player with username"
-  }
+  "targets": [
+    {
+      "username": "DesiredUsername",
+      "nextAvailableTimestamp": "1598374871000"
+    }
+  ]
 }
 ```
 
