@@ -1,6 +1,6 @@
 const api = require('./wrapper/api');
 const auth = require('./wrapper/auth')
-const { account, target } = require('./user.json');
+const { account, targets } = require('./user.json');
 
 const sleep = require('util').promisify(setTimeout);
 
@@ -11,25 +11,27 @@ const divider = '------------------------------';
   if (!accessToken)
     return console.log(`RESULT: Invalid username or password.`);
   
-  console.log('---- INITIAL TEST ATTEMPT ----');
-  await changeUsername(account.bearerToken, selectedProfile);
+    console.log('---- INITIAL TEST ATTEMPT ----');
+    await changeUsername(account.bearerToken, selectedProfile, targets[0]);
 
-  const availableMs = await nextAvailableMs(target.uuid);
-  const timeLeftMs = () => availableMs - new Date();
+  for (let i = 0; i < targets.length; i++) {
+    const target = targets[i];
 
-  console.log(`${divider} \n${target.username} is available at ${new Date(availableMs)}`);
+    let availableMs = +target.nextAvailableTimestamp;
+    const timeLeftMs = () => availableMs - new Date();
   
-  const offsetMs = 50;
-  await setSecReminder(timeLeftMs, offsetMs);
-
-  await sleep(timeLeftMs() - offsetMs);
-  await changeUsername(account.bearerToken, selectedProfile);
-  await changeUsername(account.bearerToken, selectedProfile);
-  await changeUsername(account.bearerToken, selectedProfile);
-
+    console.log(`${divider}\n${target.username} is available at ${new Date(availableMs)}`);
+    
+    const offsetMs = 35;
+    await setSecReminder(timeLeftMs, offsetMs, target);
+  
+    await sleep(timeLeftMs() - offsetMs);
+    await changeUsername(account.bearerToken, selectedProfile, target);
+    await changeUsername(account.bearerToken, selectedProfile, target);    
+  }
 })();
 
-async function setSecReminder(timeLeftMs, offsetMs) {
+async function setSecReminder(timeLeftMs, offsetMs, target) {
   await sleep(timeLeftMs() - offsetMs - (60 * 1000));
   const secReminder = setInterval(() => {
     console.log(`Attempting to get ${target.username} in ${timeLeftMs() / 1000}s`);
@@ -38,7 +40,7 @@ async function setSecReminder(timeLeftMs, offsetMs) {
   }, 5 * 1000);
 }
 
-async function changeUsername(bearerToken, profile) {
+async function changeUsername(bearerToken, profile, target) {
   console.time('changeUsername');
 
   const attempt = await api.changeUsername(account.password,
@@ -63,10 +65,6 @@ async function changeUsername(bearerToken, profile) {
   console.log(`At: ${new Date()}`);
 }
 
-async function nextAvailableMs(uuid) {
-  const history = await api.getNameHistory(uuid);
-  const { changedToAt } = history[history.length - 1];
-
-  const thirtySevenDaysLater = new Date(changedToAt);
-  return thirtySevenDaysLater.setDate(thirtySevenDaysLater.getDate() + 37);
+async function nextAvailableMs() {
+  return +target.nextAvailableTimestamp;
 }
