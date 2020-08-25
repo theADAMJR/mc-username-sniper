@@ -1,5 +1,5 @@
 # Minecraft Username Sniper
-Slow username sniper that seems to work to a small extent.
+Slow minecraft username sniper that seems to work to a small extent.
 
 `user.json`:
 ```json
@@ -22,7 +22,7 @@ Slow username sniper that seems to work to a small extent.
 ## Errors
 
 `Invalid name change: profileId = b57394efaee14e20b9b269b41c95e1b7, new name = Detected.`
-Name was unavailable or could not be changed at that time. This also means the bearerToken is valid
+Name was unavailable or could not be changed at that time. This also means the bearerToken is valid.
 
 ---
 
