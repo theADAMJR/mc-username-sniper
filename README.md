@@ -1,5 +1,5 @@
 # Minecraft Username Sniper
-Slow username sniper that has disappointed many times.
+Slow username sniper that seems to work to a small extent.
 
 `user.json`:
 ```json
